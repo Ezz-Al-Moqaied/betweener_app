@@ -17,14 +17,21 @@ class _AddLinkViewState extends State<AddLinkView> {
   TextEditingController linkController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void AddLink() {
+  void addLinkView() {
     if (_formKey.currentState!.validate()) {
       final bodyData = {
         'title': titleLinkController.text,
         'link': linkController.text
       };
 
-      addLink(bodyData).then((value) async {}).catchError((err) {
+      addLink(bodyData).then((value) async {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("The link has been added successfully"),
+          backgroundColor: kLinksColor,
+        ));
+        titleLinkController.clear();
+        linkController.clear();
+      }).catchError((err) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(err.toString()),
           backgroundColor: Colors.red,
@@ -79,9 +86,7 @@ class _AddLinkViewState extends State<AddLinkView> {
               ),
               GestureDetector(
                 onTap: () async {
-                  AddLink();
-                  titleLinkController.clear();
-                  linkController.clear();
+                  addLinkView();
                 },
                 child: Container(
                   padding:

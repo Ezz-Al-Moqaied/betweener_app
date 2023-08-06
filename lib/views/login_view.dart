@@ -46,8 +46,6 @@ class _LoginViewState extends State<LoginView> {
           backgroundColor: Colors.red,
         ));
       });
-
-      // Navigator.pushNamed(context, MainAppView.id);
     }
   }
 

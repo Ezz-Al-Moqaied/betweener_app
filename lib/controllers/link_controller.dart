@@ -26,15 +26,12 @@ Future<List<Link>> getLinks(context) async {
   return Future.error('Somthing wrong');
 }
 
-Future<LinkModel> addLink (Map<String, dynamic> body) async {
+Future<LinkModel> addLink(Map<String, dynamic> body) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   UserModel user = userModelFromJson(prefs.getString('user')!);
   print(user.token);
-  final response = await http.post(
-    Uri.parse(linksUrl),
-    body: body,
-      headers: {'Authorization': 'Bearer ${user.token}'});
-
+  final response = await http.post(Uri.parse(linksUrl),
+      body: body, headers: {'Authorization': 'Bearer ${user.token}'});
 
   if (response.statusCode == 200) {
     return linkModelFromJson(response.body);
@@ -43,15 +40,34 @@ Future<LinkModel> addLink (Map<String, dynamic> body) async {
   }
 }
 
-Future<LinkModel> updateLink (Map<String, dynamic> body) async {
+Future<LinkModel> updateLink(Link link) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   UserModel user = userModelFromJson(prefs.getString('user')!);
-  print(user.token);
-  final response = await http.put(
-      Uri.parse(linksUrl),
-      body: body,
+  final bodyData = {'title': link.title, 'link': link.link};
+
+  String url = "$linksUrl/${link.id}";
+
+  final response = await http.put(Uri.parse(url),
+      body: bodyData, headers: {'Authorization': 'Bearer ${user.token}'});
+
+  if (response.statusCode == 200) {
+    return linkModelFromJson(response.body);
+  } else {
+    throw Exception('Failed to link From Json');
+  }
+}
+
+Future<LinkModel> deleteLink(String id) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  UserModel user = userModelFromJson(prefs.getString('user')!);
+
+  String url = "$deleteUrl$id";
+
+  print(url);
+  final response = await http.delete(Uri.parse(url),
       headers: {'Authorization': 'Bearer ${user.token}'});
 
+  print(response.statusCode);
 
   if (response.statusCode == 200) {
     return linkModelFromJson(response.body);

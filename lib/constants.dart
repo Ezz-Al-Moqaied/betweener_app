@@ -8,6 +8,8 @@ const followUrl = '$baseUrl/follow';
 const searchUrl = '$baseUrl/search';
 const addFollowUrl = '$baseUrl/follow';
 const registerUrl = '$baseUrl/register';
+const updateUrl = '$baseUrl/links/';
+const deleteUrl = '$baseUrl/links/';
 
 // ============= STYLE CONSTS ==============
 

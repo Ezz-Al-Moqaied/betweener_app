@@ -26,4 +26,5 @@ Future<dynamic> addFollow(Map<String, dynamic> body) async {
   if (response.statusCode == 200) {
     return jsonDecode(response.body)['message'].toString();
   }
+
 }

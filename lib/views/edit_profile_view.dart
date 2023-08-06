@@ -84,10 +84,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               ),
               GestureDetector(
                 onTap: () async {
-                  final body = {
-                    'id' : widget.user.user!.id ,
-                  };
-                  updateLink(body);
+
                 },
                 child: Container(
                   padding:

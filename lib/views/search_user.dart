@@ -4,6 +4,20 @@ import 'package:betweener_app/controllers/search_controller.dart';
 import 'package:flutter/material.dart';
 
 class SearchUser extends SearchDelegate {
+  void addFollowView(var body, BuildContext context) {
+    addFollow(body).then((value) async {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("The person has been followed"),
+        backgroundColor: kLinksColor,
+      ));
+    }).catchError((err) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("You are following the person"),
+        backgroundColor: Colors.red,
+      ));
+    });
+  }
+
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -58,31 +72,8 @@ class SearchUser extends SearchDelegate {
                                 users!.name!,
                                 style: const TextStyle(color: Colors.white),
                               ),
-                              const SizedBox(height: 8,),
-                              Row(
-                                children: [
-                                  FutureBuilder(
-                                    future: getFollowingCount(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Container(
-                                          padding: const EdgeInsets.all(6),
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15)),
-                                            color: kSecondaryColor,
-                                          ),
-                                          child: Text(
-                                              'followers :  ${snapshot.data?.followersCount}',
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black)),
-                                        );
-                                      }
-                                      return Container();
-                                    },
-                                  ),
-                                ],
+                              const SizedBox(
+                                height: 8,
                               ),
                             ],
                           ),
@@ -92,8 +83,7 @@ class SearchUser extends SearchDelegate {
                                 final body = {
                                   'followee_id': users.id.toString(),
                                 };
-
-                                addFollow(body);
+                                addFollowView(body, context);
                               },
                               child: const Text("Follow")),
                           const SizedBox(

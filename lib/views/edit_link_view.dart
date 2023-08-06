@@ -1,15 +1,14 @@
 import 'package:betweener_app/constants.dart';
 import 'package:betweener_app/controllers/link_controller.dart';
+import 'package:betweener_app/models/link.dart';
 import 'package:betweener_app/views/widgets/custom_text_form_field.dart';
+import 'package:betweener_app/views/widgets/navigate_widget.dart';
 import 'package:flutter/material.dart';
 
 class EditLinkView extends StatefulWidget {
-  String linkTitle;
+  Link link;
 
-  String link;
-
-  EditLinkView({Key? key, required this.linkTitle, required this.link})
-      : super(key: key);
+  EditLinkView({Key? key, required this.link}) : super(key: key);
 
   @override
   State<EditLinkView> createState() => _EditLinkViewState();
@@ -20,15 +19,13 @@ class _EditLinkViewState extends State<EditLinkView> {
   TextEditingController linkController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void AddLink() {
+  void updateLinkView() {
     if (_formKey.currentState!.validate()) {
-      final bodyData = {
-        'title': titleLinkController.text,
-        'link': linkController.text
-      };
-
-      updateLink(bodyData).then((value) async {
-        print(value.link!.title);
+      updateLink(widget.link).then((value) async {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("The item has been modified successfully"),
+          backgroundColor: kLinksColor,
+        ));
       }).catchError((err) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(err.toString()),
@@ -40,8 +37,8 @@ class _EditLinkViewState extends State<EditLinkView> {
 
   @override
   Widget build(BuildContext context) {
-    titleLinkController.text = widget.linkTitle;
-    linkController.text = widget.link;
+    titleLinkController.text = widget.link.title!;
+    linkController.text = widget.link.link!;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kLinksColor.withOpacity(0.6),
@@ -85,8 +82,8 @@ class _EditLinkViewState extends State<EditLinkView> {
                 height: 32,
               ),
               GestureDetector(
-                onTap: () async {
-                  AddLink();
+                onTap: () {
+                  updateLinkView();
                 },
                 child: Container(
                   padding:

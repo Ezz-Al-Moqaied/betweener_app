@@ -15,7 +15,6 @@ class _LoadingViewState extends State<LoadingView> {
   void checkLogin() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('user') && mounted) {
-
       Navigator.pushReplacementNamed(context, MainAppView.id);
     } else {
       Navigator.pushReplacementNamed(context, LoginView.id);
