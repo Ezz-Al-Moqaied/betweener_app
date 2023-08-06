@@ -14,3 +14,16 @@ Future<UserModel> login(Map<String, String> body) async {
     throw Exception('Failed to login');
   }
 }
+
+Future<UserModel> register(Map<String, String> body) async {
+  final response = await http.post(
+    Uri.parse(registerUrl),
+    body: body,
+  );
+
+  if (response.statusCode == 200) {
+    return userModelFromJson(response.body);
+  } else {
+    throw Exception('Failed to login');
+  }
+}

@@ -1,8 +1,12 @@
 import 'package:betweener_app/assets.dart';
+import 'package:betweener_app/controllers/auth_controller.dart';
+import 'package:betweener_app/models/user.dart';
+import 'package:betweener_app/views/main_app_view.dart';
 import 'package:betweener_app/views/widgets/custom_text_form_field.dart';
 import 'package:betweener_app/views/widgets/secondary_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../views/widgets/google_button_widget.dart';
 
 class RegisterView extends StatefulWidget {
@@ -85,7 +89,30 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   SecondaryButtonWidget(
                       onTap: () {
-                        if (_formKey.currentState!.validate()) {}
+                        if (_formKey.currentState!.validate()) {
+                          final body = {
+                            'name': nameController.text,
+                            'email': emailController.text,
+                            'password': passwordController.text,
+                            'password_confirmation': passwordController.text,
+                          };
+                          register(body).then((user) async {
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.setString(
+                                'user', userModelToJson(user));
+
+                            if (mounted) {
+                              Navigator.pushNamed(context, MainAppView.id);
+                            }
+                          }).catchError((err) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(err.toString()),
+                              backgroundColor: Colors.red,
+                            ));
+                          });
+                          ;
+                        }
                       },
                       text: 'REGISTER'),
                   const SizedBox(
