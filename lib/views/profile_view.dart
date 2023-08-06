@@ -2,11 +2,14 @@ import 'package:betweener_app/controllers/followers_controller.dart';
 import 'package:betweener_app/controllers/link_controller.dart';
 import 'package:betweener_app/controllers/user_controller.dart';
 import 'package:betweener_app/views/add_link_view.dart';
+import 'package:betweener_app/views/edit_link_view.dart';
+import 'package:betweener_app/views/edit_profile_view.dart';
+import 'package:betweener_app/views/widgets/navigate_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import '../constants.dart';
 import '../models/link.dart';
 import '../models/user.dart';
-
 
 class ProfileView extends StatefulWidget {
   static String id = '/profileView';
@@ -34,36 +37,55 @@ class _ProfileViewState extends State<ProfileView> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(
+            height: 50,
+          ),
           FutureBuilder(
             future: user,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(15),
                   margin: const EdgeInsets.all(8),
                   decoration: const BoxDecoration(
                     color: kPrimaryColor,
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.network(
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1Tyom2tGGTFNI69YWk3_v4UDPiCclNcxZaKdVKC-N&s',
-                        width: 120,
-                        height: 120,
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 20,
+                          ),
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundImage: NetworkImage(
+                                'https://www.clipartmax.com/png/middle/91-915439_to-the-functionality-and-user-experience-of-our-site-red-person-icon.png'),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                        ],
                       ),
                       const SizedBox(
-                        width: 8,
+                        width: 12,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const SizedBox(
+                            height: 8,
+                          ),
                           Text(
                             '${snapshot.data?.user?.name}',
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 24),
+                                fontSize: 22),
                           ),
                           Text(
                             '${snapshot.data?.user?.email}',
@@ -79,6 +101,9 @@ class _ProfileViewState extends State<ProfileView> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16),
                           ),
+                          const SizedBox(
+                            height: 12,
+                          ),
                           Row(
                             children: [
                               FutureBuilder(
@@ -86,20 +111,25 @@ class _ProfileViewState extends State<ProfileView> {
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     return Container(
-                                      padding: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(6),
                                       decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                                        color: kSecondaryColor ,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15)),
+                                        color: kSecondaryColor,
                                       ),
                                       child: Text(
                                           'followers :  ${snapshot.data?.followersCount}',
-                                          style: const TextStyle(color: Colors.white)),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black)),
                                     );
                                   }
-                                  return const Text('loading');
+                                  return Container();
                                 },
                               ),
-                              const SizedBox(width: 8,),
+                              const SizedBox(
+                                width: 12,
+                              ),
                               FutureBuilder(
                                 future: getFollowingCount(),
                                 builder: (context, snapshot) {
@@ -107,20 +137,39 @@ class _ProfileViewState extends State<ProfileView> {
                                     return Container(
                                       padding: const EdgeInsets.all(8),
                                       decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                                        color: kSecondaryColor ,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15)),
+                                        color: kSecondaryColor,
                                       ),
                                       child: Text(
                                         'following : ${snapshot.data?.followingCount}',
-                                        style: const TextStyle(color: Colors.white),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
                                       ),
                                     );
                                   }
-                                  return const Text('loading');
+                                  return Container();
                                 },
                               ),
                             ],
-                          )
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                navigatePush(
+                                    context: context,
+                                    nextScreen:
+                                        EditProfileView(user: snapshot.data!));
+                              },
+                              icon: const Icon(
+                                Icons.edit_outlined,
+                                size: 30,
+                                color: Colors.white,
+                              ))
                         ],
                       )
                     ],
@@ -130,50 +179,92 @@ class _ProfileViewState extends State<ProfileView> {
               return const Text('loading');
             },
           ),
+          const SizedBox(
+            height: 16,
+          ),
           Expanded(
             child: FutureBuilder(
               future: links,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return SizedBox(
-                    height: 80,
-                    child: ListView.separated(
-                        padding: const EdgeInsets.all(12),
-                        scrollDirection: Axis.vertical,
-                        itemBuilder: (context, index) {
-                          final link = snapshot.data?[index];
-                          return Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                  color: index%2 == 0 ? kLinksColor : kSecondaryColor,
-                                  borderRadius: BorderRadius.circular(15)),
+                  return ListView.separated(
+                      padding: const EdgeInsets.all(12),
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) {
+                        final link = snapshot.data?[index];
+                        return Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              color: index % 2 == 0
+                                  ? kDangerColor.withOpacity(0.3)
+                                  : kSecondaryColor.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Slidable(
+                            endActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {},
+                                  backgroundColor: kRedColor,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    navigatePush(
+                                        context: context,
+                                        nextScreen: EditLinkView(
+                                            linkTitle: link!.title!,
+                                            link: link.link!));
+                                  },
+                                  backgroundColor: kSecondaryColor,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.edit,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                ),
+                              ],
+                            ),
+                            child: SizedBox(
+                              width: double.infinity,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     link!.title!,
-                                    style: const TextStyle(color: Colors.white),
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   Text(
                                     link.link!,
-                                    style: const TextStyle(color: Colors.white),
+                                    style: TextStyle(
+                                        color: Colors.black.withOpacity(0.4),
+                                        fontSize: 18),
                                   ),
                                 ],
-                              )
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 16,
-                          );
-                        },
-                        itemCount: snapshot.data!.length),
-                  );
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(
+                          height: 16,
+                        );
+                      },
+                      itemCount: snapshot.data!.length);
                 }
                 if (snapshot.hasError) {
                   return Text(snapshot.error.toString());
                 }
-                return const Text('loading');
+                return Container();
               },
             ),
           ),
@@ -188,14 +279,17 @@ class _ProfileViewState extends State<ProfileView> {
                   padding: const EdgeInsets.all(15),
                   margin: const EdgeInsets.only(right: 25),
                   decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: kPrimaryColor
-                  ),
-                  alignment: Alignment.centerRight, child: const Icon(Icons.add , color: Colors.white, size: 25),),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      color: kPrimaryColor),
+                  alignment: Alignment.centerRight,
+                  child: const Icon(Icons.add, color: Colors.white, size: 25),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 100,),
+          const SizedBox(
+            height: 100,
+          ),
         ],
       ),
     );

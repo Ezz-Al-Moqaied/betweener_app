@@ -6,6 +6,7 @@ const loginUrl = '$baseUrl/login';
 const linksUrl = '$baseUrl/links';
 const followUrl = '$baseUrl/follow';
 const searchUrl = '$baseUrl/search';
+const addFollowUrl = '$baseUrl/follow';
 
 // ============= STYLE CONSTS ==============
 

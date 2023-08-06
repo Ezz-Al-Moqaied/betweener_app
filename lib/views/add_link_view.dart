@@ -17,7 +17,7 @@ class _AddLinkViewState extends State<AddLinkView> {
   TextEditingController linkController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void AddLink(String token) {
+  void AddLink() {
     if (_formKey.currentState!.validate()) {
       final bodyData = {
         'title': titleLinkController.text,
@@ -37,7 +37,7 @@ class _AddLinkViewState extends State<AddLinkView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: kLinksColor.withOpacity(0.5),
+        backgroundColor: kLinksColor.withOpacity(0.6),
         title: const Text("Add Link"),
       ),
       body: Form(
@@ -79,9 +79,9 @@ class _AddLinkViewState extends State<AddLinkView> {
               ),
               GestureDetector(
                 onTap: () async {
-                  // setState(() {});
-
-                  AddLink("");
+                  AddLink();
+                  titleLinkController.clear();
+                  linkController.clear();
                 },
                 child: Container(
                   padding:

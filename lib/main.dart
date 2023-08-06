@@ -7,12 +7,9 @@ import 'package:betweener_app/views/main_app_view.dart';
 import 'package:betweener_app/views/profile_view.dart';
 import 'package:betweener_app/views/receive_view.dart';
 import 'package:betweener_app/views/register_view.dart';
-import 'package:betweener_app/views/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await SharedPreferencesHelper.init();
   runApp(const MyApp());
 }
 

@@ -1,6 +1,7 @@
 import 'package:betweener_app/controllers/link_controller.dart';
+import 'package:betweener_app/views/add_link_view.dart';
 import 'package:betweener_app/views/search_user.dart';
-import 'package:betweener_app/views/shared_preferences.dart';
+import 'package:betweener_app/views/widgets/navigate_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../constants.dart';
@@ -26,7 +27,6 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    print(SharedPreferencesHelper.user.user!.id!);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -66,21 +66,16 @@ class _HomeViewState extends State<HomeView> {
               alignment: Alignment.center,
               width: double.infinity,
               child: QrImageView(
-                data: SharedPreferencesHelper.user.user!.id!.toString(),
+                data: '20',
                 version: QrVersions.auto,
                 size: 350.0,
               ),
             ),
-            Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                color: Color.fromRGBO(247, 247, 250, 100),
-              ),
-              height: 150,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  Expanded(
-                      child: FutureBuilder(
+                  FutureBuilder(
                     future: links,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
@@ -88,15 +83,15 @@ class _HomeViewState extends State<HomeView> {
                           height: 120,
                           child: ListView.separated(
                               padding: const EdgeInsets.all(12),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 final link = snapshot.data?[index];
                                 return Container(
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                        color: index % 2 == 0
-                                            ? kLinksColor
-                                            : kSecondaryColor,
+                                        color: kLinksColor,
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                     child: Column(
@@ -133,16 +128,30 @@ class _HomeViewState extends State<HomeView> {
                       }
                       return const Text('loading');
                     },
-                  )),
+                  ),
                   GestureDetector(
                     onTap: () {
-
+                      navigatePush(context: context, nextScreen: const AddLinkView());
                     },
                     child: Container(
+                      height: 98,
+                      padding: const EdgeInsets.all(12),
+                      decoration: const BoxDecoration(
+                        color: kSecondaryColor,
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                      ),
                       child: const Column(
-                        children:  [
-                          Icon(Icons.add),
-                          Text("Add Link"),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add,
+                            size: 30,
+                          ),
+                          Text(
+                            "Add Link",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                     ),
@@ -156,3 +165,4 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
+//

@@ -42,3 +42,20 @@ Future<LinkModel> addLink (Map<String, dynamic> body) async {
     throw Exception('Failed to link From Json');
   }
 }
+
+Future<LinkModel> updateLink (Map<String, dynamic> body) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  UserModel user = userModelFromJson(prefs.getString('user')!);
+  print(user.token);
+  final response = await http.put(
+      Uri.parse(linksUrl),
+      body: body,
+      headers: {'Authorization': 'Bearer ${user.token}'});
+
+
+  if (response.statusCode == 200) {
+    return linkModelFromJson(response.body);
+  } else {
+    throw Exception('Failed to link From Json');
+  }
+}
