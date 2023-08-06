@@ -1,4 +1,5 @@
 import 'package:betweener_app/constants.dart';
+import 'package:betweener_app/controllers/link_controller.dart';
 import 'package:betweener_app/models/user.dart';
 import 'package:betweener_app/views/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
@@ -83,6 +84,10 @@ class _EditProfileViewState extends State<EditProfileView> {
               ),
               GestureDetector(
                 onTap: () async {
+                  final body = {
+                    'id' : widget.user.user!.id ,
+                  };
+                  updateLink(body);
                 },
                 child: Container(
                   padding:
