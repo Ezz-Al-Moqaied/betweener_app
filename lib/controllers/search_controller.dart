@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:betweener_app/constants.dart';
-import 'package:betweener_app/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+import '../models/user.dart';
 
 Future<List<User>> searchUser(String query) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();

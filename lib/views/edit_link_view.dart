@@ -1,9 +1,10 @@
+
 import 'package:betweener_app/constants.dart';
-import 'package:betweener_app/controllers/link_controller.dart';
 import 'package:betweener_app/models/link.dart';
+import 'package:betweener_app/provider/link_provider.dart';
 import 'package:betweener_app/views/widgets/custom_text_form_field.dart';
-import 'package:betweener_app/views/widgets/navigate_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditLinkView extends StatefulWidget {
   Link link;
@@ -17,28 +18,14 @@ class EditLinkView extends StatefulWidget {
 class _EditLinkViewState extends State<EditLinkView> {
   TextEditingController titleLinkController = TextEditingController();
   TextEditingController linkController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
 
-  void updateLinkView() {
-    if (_formKey.currentState!.validate()) {
-      updateLink(widget.link).then((value) async {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("The item has been modified successfully"),
-          backgroundColor: kLinksColor,
-        ));
-      }).catchError((err) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(err.toString()),
-          backgroundColor: Colors.red,
-        ));
-      });
-    }
-  }
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     titleLinkController.text = widget.link.title!;
     linkController.text = widget.link.link!;
+    final linkProvider = Provider.of<LinkProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kLinksColor.withOpacity(0.6),
@@ -83,7 +70,11 @@ class _EditLinkViewState extends State<EditLinkView> {
               ),
               GestureDetector(
                 onTap: () {
-                  updateLinkView();
+                  if (_formKey.currentState!.validate()) {
+                    widget.link.title = titleLinkController.text;
+                    widget.link.link = linkController.text;
+                    linkProvider.updateLink(widget.link);
+                  }
                 },
                 child: Container(
                   padding:

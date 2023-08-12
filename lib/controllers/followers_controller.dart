@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:betweener_app/constants.dart';
 import 'package:betweener_app/models/follower_model.dart';
 import 'package:betweener_app/models/user.dart';

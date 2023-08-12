@@ -1,6 +1,6 @@
 import 'package:betweener_app/assets.dart';
 import 'package:betweener_app/constants.dart';
-import 'package:betweener_app/views/login_view.dart';
+import 'package:betweener_app/views/views/login_view.dart';
 import 'package:betweener_app/views/widgets/secondary_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

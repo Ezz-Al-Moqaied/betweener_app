@@ -1,5 +1,6 @@
 import 'package:betweener_app/constants.dart';
 import 'package:flutter/material.dart';
+
 class CustomFloatingNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int)? onTap;

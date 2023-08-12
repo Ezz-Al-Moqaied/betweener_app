@@ -3,7 +3,6 @@ import 'package:betweener_app/views/profile_view.dart';
 import 'package:betweener_app/views/receive_view.dart';
 import 'package:betweener_app/views/widgets/custom_floating_nav_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
 
 class MainAppView extends StatefulWidget {
   static String id = '/mainAppView';
